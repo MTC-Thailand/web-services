@@ -108,9 +108,13 @@ class MemberResource(Resource):
         resp = requests.get(base_url + member.pic_member, stream=True)
         if resp.status_code == 200:
             img_code = base64.b64encode(resp.content)
+        min_time = datetime.min.time()
 
         return {'data': [
             {
+                'honorific_prefix_th': member.title_id,
+                'honorific_prefix_en': member.e_title,
+                'pic': img_code.decode(),
                 'given_name_th': member.fname,
                 'family_name_th': member.lname,
                 'given_name_en': member.e_fname,
@@ -118,10 +122,10 @@ class MemberResource(Resource):
                 'medical_license_info': {
                     'number': str(license.lic_id),
                     'type': 'สภาเทคนิคการแพทย์',
-                    'approved_date': license.appr_date.isoformat(),
+                    'approved_date': tz.localize(datetime.combine(license.appr_date, min_time)).isoformat(),
                     'license_info': {
-                        'start_date': license.lic_b_date.isoformat(),
-                        'end_date': license.lic_exp_date.isoformat(),
+                        'start_date': tz.localize(datetime.combine(license.lic_b_date, min_time)).isoformat(),
+                        'end_date': tz.localize(datetime.combine(license.lic_exp_date, min_time)).isoformat(),
                         'license_number': str(license.lic_id),
                     }
                 }
