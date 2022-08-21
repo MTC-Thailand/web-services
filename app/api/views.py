@@ -78,7 +78,8 @@ class MemberINETResource(Resource):
         data = \
             {
                 'pic': img_code.decode(),
-                'honorific_prefix_th': 'นาย',
+                'honorific_prefix_th': member.title_id,
+                'honorific_prefix_en': member.e_title,
                 'given_name_th': member.fname,
                 'family_name_th': member.lname,
                 'given_name_en': member.e_fname,
