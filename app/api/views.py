@@ -4,7 +4,7 @@ import base64
 import pytz
 import requests
 from datetime import datetime
-from flask import jsonify
+from flask import jsonify, request
 from flask_restful import Resource
 
 from app.api import api
@@ -39,7 +39,7 @@ class MemberPIDResource(Resource):
             return {'result': False}
 
 
-class MemberINETResource(Resource):
+class MemberMOPHResource(Resource):
     def get(self, mem_id):
         member = db.session.query(Member).get_or_404(mem_id)
         if not member:
@@ -62,6 +62,7 @@ class MemberINETResource(Resource):
             return resp.json()
 
     def post(self, mem_id):
+        todo = request.args.get('todo', 'create')
         member = db.session.query(Member).get_or_404(mem_id)
         if member:
             license = db.session.query(License).filter(License.mem_id == member.mem_id).first()
@@ -95,8 +96,7 @@ class MemberINETResource(Resource):
                     }
                 }
             }
-        print(data)
-        resp = requests.post(API_URL + '/create', json=data, headers=headers)
+        resp = requests.post(API_URL + f'/{todo}', json=data, headers=headers)
         return jsonify(resp.json())
 
 
