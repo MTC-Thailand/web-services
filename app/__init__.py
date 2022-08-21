@@ -26,8 +26,11 @@ from app.api import api as api_blueprint
 api = Api(api_blueprint)
 
 # add resources here
-from app.api.views import MemberResource
+from app.api.views import MemberResource, MemberPIDResource, MemberINETResource
+
 api.add_resource(MemberResource, '/member/<int:mem_id>')
+api.add_resource(MemberPIDResource, '/member/pid/<int:pid>')
+api.add_resource(MemberINETResource, '/inet/member/<int:mem_id>')
 
 
 app.register_blueprint(api_blueprint)

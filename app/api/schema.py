@@ -5,6 +5,7 @@ from app import Base
 
 
 Member = Base.classes.member
+License = Base.classes.lic_mem
 
 
 class MemberSchema(SQLAlchemyAutoSchema):
