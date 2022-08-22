@@ -44,6 +44,8 @@ class MemberMOPHResource(Resource):
         member = db.session.query(Member).get_or_404(mem_id)
         if not member:
             return {'message': f'Member with the ID={mem_id} not found.'}
+        else:
+            license = db.session.query(License).filter(License.mem_id == member.mem_id).first()
         access_token = get_access_token()
         if access_token is None:
             return {'message': 'Authorization failed.'}, 401
@@ -51,15 +53,12 @@ class MemberMOPHResource(Resource):
         headers = {'Authorization': f'Bearer {access_token}'}
         params = {
             'medical_type': 'สภาเทคนิคการแพทย์',
+            'medical_license': str(license.lic_id),
             'given_name': member.fname,
             'family_name': member.lname,
         }
-        print(params)
-        resp = requests.post(API_URL + '/find', params=params, headers=headers)
-        if resp.status_code == 200:
-            return resp.json()
-        else:
-            return resp.json()
+        resp = requests.get(API_URL + '/find', params=params, headers=headers)
+        return resp.json()
 
     def post(self, mem_id):
         todo = request.args.get('todo', 'create')
