@@ -4,8 +4,9 @@ from flask import Flask
 from flask_restful import Api
 from dotenv import load_dotenv
 from sqlalchemy.ext.automap import automap_base
+from sqlalchemy import create_engine
 
-from app.extensions import db, ma
+from app.extensions import db, ma, migrate
 
 load_dotenv()
 
@@ -15,10 +16,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS', False)
 db.init_app(app)
 ma.init_app(app)
+migrate.init_app(app, db)
 
 with app.app_context():
     Base = automap_base()
-    Base.prepare(db.engine, reflect=True)
+    mtc_engine = create_engine(os.environ.get('MTC_DATABASE_URI'))
+    Base.prepare(mtc_engine, reflect=True)
 
 
 from app.api import api as api_blueprint

@@ -1,0 +1,1 @@
+from app.oauth import oauth_bp as oauth
